@@ -12,6 +12,7 @@
 #include <omp.h>
 #include <time.h>
 #include "word_list.h"
+#define CHUNK_SIZE 2
 
 int main(int argc, char *argv[])
 {
@@ -55,7 +56,9 @@ int main(int argc, char *argv[])
 		destroy_word_list(wl);
 		exit(EXIT_FAILURE);
 	}
-	#pragma omp parallel for private(j, hash)
+	
+	int chunk = CHUNK_SIZE;
+	#pragma omp parallel for schedule(dynamic, chunk) private(j, hash)
 	for (i = 0; i < wl_size; i++) {
 		for (j = 0; j < num_hf; j++) {
 			hash = hf[j] (get_word(wl, i));
